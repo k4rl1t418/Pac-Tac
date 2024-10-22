@@ -1,0 +1,209 @@
+<html>
+<head>
+  <title>PacMan Gato</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+  background-color: purple;
+}
+    .fila {
+      line-height: 0;
+    }
+    .pared {
+      background-color: rgb(66, 4, 66);
+      height: 40px;
+      width: 40px;
+      display: inline-block;
+    }
+    .burguer {
+      background-color: black;
+      height: 40px;
+      width: 40px;
+      display: inline-block;
+      background-image: url('img/burguer.png');
+      background-size: contain;
+    }
+    .blank {
+      background-color: black;
+      height: 40px;
+      width: 40px;
+      display: inline-block;
+    }
+    #gato {
+      background-color: black;
+      height: 40px;
+      width: 40px;
+      display: inline-block;
+      background-image: url('img/gato.gif');
+      background-size: contain;
+      position: absolute;
+      left: 40px;
+      top: 40px;
+    }
+    #perro {
+  background-color: black;
+  height: 20px; 
+  width: 20px;
+  display: inline-block;
+  background-image: url('img/perro.png');
+  background-size: contain; 
+  position: absolute;
+}
+    #vidas {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    #gato, #perro {
+  background-color: white;
+  border-radius: 50%;
+}
+  </style>
+</head>
+<body>
+  <div id='mundo'></div>
+  <div id='perro'></div>
+  <div id='gato'></div>
+  <div id='vidas'>Vidas: 3</div>
+  <script type="text/javascript">
+    var mundo = [
+      [1, 1, 1, 1, 1],
+      [1, 0, 2, 2, 1],
+      [1, 2, 1, 2, 1],
+      [1, 2, 2, 2, 1],
+      [1, 0, 2, 2, 1],
+      [1, 2, 1, 2, 1],
+      [1, 2, 2, 2, 1],
+      [1, 1, 1, 1, 1],
+    ];
+
+    var diccionarioMundo = {
+      0: 'blank',
+      1: 'pared',
+      2: 'burguer'
+    }
+
+    function dibujarMundo() {
+      var output = "";
+      for (var fila = 0; fila < mundo.length; fila++) {
+        output += "<div class = 'fila'>"
+        for (var x = 0; x < mundo[fila].length; x++) {
+          output += "<div class = '" + diccionarioMundo[mundo[fila][x]] + "'></div>"
+        }
+        output += "</div>"
+      }
+
+      document.getElementById('mundo').innerHTML = output;
+    }
+    dibujarMundo();
+
+    var gato = {
+      x: 1,
+      y: 5,
+    }
+
+    function dibujarGato() {
+      document.getElementById('gato').style.top = gato.y * 40 + 'px'
+      document.getElementById('gato').style.left = gato.x * 40 + 'px'
+    }
+    dibujarGato();
+
+    var perro = {
+      x: 3,
+      y: 3
+    }
+
+    function dibujarPerro() {
+      var perroElement = document.getElementById('perro');
+      perroElement.style.top = perro.y * 40 + 'px';
+      perroElement.style.left = perro.x * 40 + 'px';
+    }
+    dibujarPerro();
+
+    var vidas = 3;
+
+    function muevePerro() {
+      var dx = gato.x - perro.x;
+      var dy = gato.y - perro.y;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        if (dx > 0) {
+          perro.x++;
+        } else {
+          perro.x--;
+        }
+      } else {
+        if (dy > 0) {
+          perro.y++;
+        } else {
+          perro.y--;
+        }
+      }
+      dibujarPerro();
+
+      if ((gato.x === perro.x) && (gato.y === perro.y)) {
+        vidas--;
+        document.getElementById('vidas').innerHTML = 'Vidas: ' + vidas;
+        if (vidas === 0) {
+          alert('Juego terminado!');
+        }
+      }
+    }
+
+    setInterval(muevePerro, 1000);
+
+    document.onkeydown = function(e) {
+      if (e.keyCode === 37) { //izquierda
+        if (mundo[gato.y][gato.x - 1] !== 1) {
+          gato.x--;
+        }
+      }
+      if (e.keyCode === 38) { //arriba
+        if (mundo[gato.y - 1][gato.x] !== 1) {
+          gato.y--;
+        }
+      }
+      if (e.keyCode === 39) { //derecha
+        if (mundo[gato.y][gato.x + 1] !== 1) {
+          gato.x++;
+        }
+      }
+      if (e.keyCode === 40) { //abajo
+        if (mundo[gato.y + 1][gato.x] !== 1) {
+          gato.y++;
+        }
+      }
+      mundo[gato.y][gato.x] = 0;
+      dibujarMundo();
+      dibujarGato();
+    }
+    function dibujarMundo() {
+  var output = "";
+  var burgersLeft = 0;
+  for (var fila = 0; fila < mundo.length; fila++) {
+    output += "<div class = 'fila'>"
+    for (var x = 0; x < mundo[fila].length; x++) {
+      if (mundo[fila][x] === 2) {
+        burgersLeft++;
+      }
+      output += "<div class = '" + diccionarioMundo[mundo[fila][x]] + "'></div>"
+    }
+    output += "</div>"
+  }
+
+  document.getElementById('mundo').innerHTML = output;
+
+  if (burgersLeft === 0) {
+    alert('¡Has ganado el juego!');
+    document.body.style.background = 'purple';
+  }
+}
+
+  </script>
+</body>
+</html>
